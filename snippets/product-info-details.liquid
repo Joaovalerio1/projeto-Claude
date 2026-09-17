@@ -1,0 +1,229 @@
+{% comment %}
+  Bloco de informações em acordeão (Sobre a peça, Composição, Cuidados,
+  Envio, Trocas). Autocontido: markup + estilos aqui dentro, sem depender
+  de custom.css nem de nenhum outro snippet. Usa <details>/<summary>
+  nativos (zero JavaScript) para abertura/fechamento e acessibilidade por
+  teclado. Classes prefixadas com "zym-" para não colidir com nada do tema.
+{% endcomment %}
+
+<div class="zym-details-block">
+
+  <details class="zym-details__item">
+    <summary class="zym-details__summary">
+      <span class="zym-details__title">Sobre a peça</span>
+      <svg class="zym-details__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="zym-details__panel">
+      <div class="zym-details__panel-inner">
+        <div class="zym-details__body">
+          <p>Camisa desenvolvida para quem busca um uniforme com excelente acabamento, conforto e riqueza de detalhes.</p>
+          <p>Produzida em qualidade tailandesa 1:1, a peça é confeccionada com alto padrão de acabamento e atenção aos mínimos detalhes, buscando reproduzir com altíssimo nível de fidelidade as características visuais do uniforme original, como cores, escudo, patrocinadores, logos, gola, modelagem e demais elementos presentes no modelo.</p>
+          <p>A proposta da qualidade 1:1 é entregar uma peça muito superior às réplicas convencionais, tanto no visual quanto no acabamento e na experiência ao vestir.</p>
+          <p>Uma camisa para quem valoriza qualidade, fidelidade aos detalhes e quer vestir as cores do seu time com muito mais confiança.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="zym-details__item">
+    <summary class="zym-details__summary">
+      <span class="zym-details__title">Composição e tecnologia do tecido</span>
+      <svg class="zym-details__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="zym-details__panel">
+      <div class="zym-details__panel-inner">
+        <div class="zym-details__body">
+          <p>Nossa camisa é confeccionada em 100% poliéster, com tecnologia Dry Fit, proporcionando uma peça leve, confortável e com excelente respirabilidade.</p>
+          <p>A tecnologia do tecido foi desenvolvida para transportar a umidade do suor para a superfície da peça, facilitando a evaporação e ajudando a manter o corpo mais seco e confortável durante o uso. Por isso, o tecido é ideal tanto para atividades esportivas quanto para o uso no dia a dia.</p>
+          <p>Composição: 100% poliéster</p>
+          <p>Tecnologia: Dry Fit</p>
+          <p>Características: leveza • respirabilidade • conforto • controle de umidade • secagem rápida</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="zym-details__item">
+    <summary class="zym-details__summary">
+      <span class="zym-details__title">Cuidados com a camisa</span>
+      <svg class="zym-details__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="zym-details__panel">
+      <div class="zym-details__panel-inner">
+        <div class="zym-details__body">
+          <p>Para preservar o tecido, as cores, estampas, escudo, patrocinadores e demais aplicações da sua camisa por muito mais tempo, recomendamos seguir alguns cuidados simples:</p>
+          <ul class="zym-details__list">
+            <li>Lave preferencialmente à mão ou utilize o ciclo delicado da máquina.</li>
+            <li>Utilize água fria.</li>
+            <li>Não utilize alvejante ou produtos químicos agressivos.</li>
+            <li>Não deixe a camisa de molho por longos períodos.</li>
+            <li>Seque à sombra, evitando exposição prolongada ao sol.</li>
+            <li>Evite secadora em altas temperaturas.</li>
+            <li>Não passe o ferro diretamente sobre estampas, logos, patrocinadores ou outras aplicações.</li>
+            <li>Evite produtos que possam danificar ou desbotar o tecido e as aplicações.</li>
+          </ul>
+          <p>Seguindo essas recomendações, você ajuda a conservar a qualidade, as cores e os detalhes da sua camisa por muito mais tempo.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="zym-details__item">
+    <summary class="zym-details__summary">
+      <span class="zym-details__title">Prazos de envio e entrega</span>
+      <svg class="zym-details__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="zym-details__panel">
+      <div class="zym-details__panel-inner">
+        <div class="zym-details__body">
+          <p>Trabalhamos com produtos à pronta entrega e também sob encomenda. O prazo varia de acordo com a disponibilidade da peça e a localização do cliente.</p>
+          <p><strong>Pronta entrega</strong></p>
+          <p><strong>Clientes de Anastácio e Aquidauana:</strong></p>
+          <p>Pedidos à pronta entrega podem ser recebidos em até 24 horas, após a confirmação do pagamento.</p>
+          <p><strong>Outras cidades e estados:</strong></p>
+          <p>Pedidos à pronta entrega possuem prazo estimado de 7 a 10 dias úteis para entrega, dependendo da região.</p>
+          <p><strong>Sob encomenda</strong></p>
+          <p>Para produtos sob encomenda, o prazo de entrega é de até 20 dias úteis, contados após a confirmação do pagamento.</p>
+          <p>Importante: os prazos são estimativas e podem sofrer alterações em situações relacionadas ao transporte, endereço de destino ou outros fatores externos. O código de rastreamento será disponibilizado após o envio do pedido, quando aplicável.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="zym-details__item">
+    <summary class="zym-details__summary">
+      <span class="zym-details__title">Trocas e devoluções</span>
+      <svg class="zym-details__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="zym-details__panel">
+      <div class="zym-details__panel-inner">
+        <div class="zym-details__body">
+          <p>Para solicitar a troca, entre em contato com nossa equipe de atendimento em até 7 dias corridos após o recebimento do pedido.</p>
+          <p>Para que a troca seja realizada, a camisa deverá estar sem sinais de uso ou lavagem e com a etiqueta original fixada à peça.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<style>
+  .zym-details-block {
+    margin-top: 20px;
+    background: #fafafa;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: inherit;
+  }
+
+  .zym-details__item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .zym-details__item:last-child {
+    border-bottom: none;
+  }
+
+  .zym-details__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .zym-details__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .zym-details__summary::marker {
+    content: "";
+  }
+
+  .zym-details__summary:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: -2px;
+    border-radius: 8px;
+  }
+
+  .zym-details__title {
+    text-align: left;
+  }
+
+  .zym-details__chevron {
+    flex: none;
+    color: #666;
+    transition: transform 0.25s ease;
+  }
+
+  .zym-details__item[open] .zym-details__chevron {
+    transform: rotate(180deg);
+  }
+
+  .zym-details__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+
+  .zym-details__item[open] .zym-details__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .zym-details__panel-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .zym-details__body {
+    padding: 0 20px 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #444;
+  }
+
+  .zym-details__body p {
+    margin: 0 0 10px;
+  }
+
+  .zym-details__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .zym-details__list {
+    margin: 0 0 10px;
+    padding-left: 18px;
+  }
+
+  .zym-details__list li {
+    margin-bottom: 6px;
+  }
+
+  .zym-details__list li:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 480px) {
+    .zym-details-block {
+      margin-top: 16px;
+      border-radius: 12px;
+    }
+
+    .zym-details__summary {
+      padding: 15px 16px;
+      font-size: 13.5px;
+    }
+
+    .zym-details__body {
+      padding: 0 16px 16px;
+      font-size: 13px;
+    }
+  }
+</style>
