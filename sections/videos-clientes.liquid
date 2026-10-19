@@ -1,0 +1,937 @@
+{%- comment -%}
+  ============================================================
+  VÍDEOS DE CLIENTES ("Quem usa, aprova!")
+  Carrossel de vídeos verticais (formato Reels/TikTok) de pessoas
+  usando as camisas. Funciona no celular (arrasta com o dedo) e
+  no computador (setas + bolinhas).
+
+  Cada vídeo é um bloco. No bloco você coloca:
+  - o link do vídeo MP4 (suba em Conteúdo > Arquivos e copie o link)
+  - uma imagem de capa (opcional, aparece antes do vídeo carregar)
+  - nome da pessoa, @ do Instagram e o selo (ex: "Cliente Zymo")
+  - o produto que ela está usando (opcional) — aparece um
+    mini-card com foto, nome e preço que leva para a página dele.
+
+  Os vídeos só são baixados quando chegam perto da tela, para não
+  deixar a página pesada.
+  ============================================================
+{%- endcomment -%}
+
+{%- assign zv_id = 'zv-' | append: section.id -%}
+
+{%- style -%}
+#{{ zv_id }} {
+  --zv-accent: {% if section.settings.accent_color != blank %}{{ section.settings.accent_color }}{% else %}var(--header-accent-color, #00c853){% endif %};
+  --zv-accent-text: {{ section.settings.accent_text_color | default: '#ffffff' }};
+  --zv-per-view: {{ section.settings.per_view_desktop }};
+  --zv-gap: 16px;
+  padding-top: {{ section.settings.padding_top }}px;
+  padding-bottom: {{ section.settings.padding_bottom }}px;
+  background: {{ section.settings.background | default: '#ffffff' }};
+  overflow: hidden;
+}
+
+#{{ zv_id }} .zv-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+#{{ zv_id }} .zv-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+#{{ zv_id }} .zv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--zv-accent);
+  color: var(--zv-accent-text);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+#{{ zv_id }} .zv-title {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: {{ section.settings.text_color | default: '#111111' }};
+  letter-spacing: -.01em;
+}
+
+#{{ zv_id }} .zv-subtitle {
+  margin: 10px 0 0;
+  font-size: 16px;
+  color: {{ section.settings.text_color | default: '#111111' }};
+  opacity: .75;
+}
+
+/* ---------- Trilho do carrossel ---------- */
+#{{ zv_id }} .zv-track {
+  display: flex;
+  gap: var(--zv-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#{{ zv_id }} .zv-track::-webkit-scrollbar { display: none; }
+
+#{{ zv_id }} .zv-card {
+  position: relative;
+  flex: 0 0 calc((100% - (var(--zv-per-view) - 1) * var(--zv-gap)) / var(--zv-per-view));
+  aspect-ratio: 9 / 16;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  scroll-snap-align: start;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+  isolation: isolate;
+}
+
+/* Fallback para navegadores sem aspect-ratio (iOS antigo) */
+@supports not (aspect-ratio: 9 / 16) {
+  #{{ zv_id }} .zv-card::before { content: ''; display: block; padding-top: 177.78%; }
+}
+
+#{{ zv_id }} .zv-media,
+#{{ zv_id }} .zv-media video,
+#{{ zv_id }} .zv-media img,
+#{{ zv_id }} .zv-media svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+#{{ zv_id }} .zv-media svg { background: #e9e9e9; fill: #c4c4c4; }
+
+#{{ zv_id }} .zv-media video { cursor: pointer; }
+
+/* Sombra embaixo para o texto ficar legível */
+#{{ zv_id }} .zv-card::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 55%;
+  background: linear-gradient(to top, rgba(0, 0, 0, .85) 0%, rgba(0, 0, 0, .35) 55%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---------- Botões sobre o vídeo ---------- */
+#{{ zv_id }} .zv-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 3;
+}
+
+#{{ zv_id }} .zv-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .28);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+
+#{{ zv_id }} .zv-btn:hover { background: rgba(255, 255, 255, .45); }
+#{{ zv_id }} .zv-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+#{{ zv_id }} .zv-big-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .7);
+  background: rgba(0, 0, 0, .3);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+#{{ zv_id }} .zv-big-play svg { width: 22px; height: 22px; fill: currentColor; margin-left: 3px; }
+#{{ zv_id }} .zv-big-play:hover { transform: scale(1.06); }
+
+/* Ícones trocam conforme o estado do card */
+#{{ zv_id }} .zv-icon-pause,
+#{{ zv_id }} .zv-icon-sound { display: none; }
+#{{ zv_id }} .zv-card.is-playing .zv-icon-play { display: none; }
+#{{ zv_id }} .zv-card.is-playing .zv-icon-pause { display: block; }
+#{{ zv_id }} .zv-card.is-playing .zv-big-play { opacity: 0; pointer-events: none; }
+#{{ zv_id }} .zv-card.has-sound .zv-icon-muted { display: none; }
+#{{ zv_id }} .zv-card.has-sound .zv-icon-sound { display: block; }
+
+/* ---------- Infos embaixo do vídeo ---------- */
+#{{ zv_id }} .zv-info {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  color: #fff;
+}
+
+#{{ zv_id }} .zv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--zv-accent);
+  color: var(--zv-accent-text);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+#{{ zv_id }} .zv-badge svg { width: 10px; height: 10px; fill: currentColor; }
+
+#{{ zv_id }} .zv-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #fff;
+}
+
+#{{ zv_id }} .zv-handle {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .85);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+#{{ zv_id }} a.zv-handle:hover { color: #fff; text-decoration: underline; }
+
+#{{ zv_id }} .zv-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .14);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+
+#{{ zv_id }} .zv-product:hover { background: rgba(255, 255, 255, .24); color: #fff; }
+
+#{{ zv_id }} .zv-product img {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #fff;
+}
+
+#{{ zv_id }} .zv-product-text { flex: 1 1 auto; min-width: 0; }
+
+#{{ zv_id }} .zv-product-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#{{ zv_id }} .zv-product-price {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: .9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#{{ zv_id }} .zv-product-plus {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+/* ---------- Setas e bolinhas ---------- */
+#{{ zv_id }} .zv-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+#{{ zv_id }} .zv-nav[hidden] { display: none; }
+
+#{{ zv_id }} .zv-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--zv-accent);
+  background: transparent;
+  color: var(--zv-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background .2s ease, color .2s ease, opacity .2s ease;
+}
+
+#{{ zv_id }} .zv-arrow:hover:not(:disabled) { background: var(--zv-accent); color: var(--zv-accent-text); }
+#{{ zv_id }} .zv-arrow:disabled { opacity: .35; cursor: default; }
+#{{ zv_id }} .zv-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+
+#{{ zv_id }} .zv-dots { display: flex; align-items: center; gap: 6px; }
+
+#{{ zv_id }} .zv-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: #c8c8c8;
+  cursor: pointer;
+  transition: width .25s ease, background .25s ease;
+}
+
+#{{ zv_id }} .zv-dot.is-active { width: 24px; background: var(--zv-accent); }
+
+/* ---------- Tablet ---------- */
+@media screen and (max-width: 1023px) {
+  #{{ zv_id }} { --zv-per-view: {{ section.settings.per_view_tablet }}; }
+  #{{ zv_id }} .zv-title { font-size: 32px; }
+}
+
+/* ---------- Celular ---------- */
+@media screen and (max-width: 640px) {
+  #{{ zv_id }} {
+    --zv-per-view: {{ section.settings.per_view_mobile }};
+    --zv-gap: 10px;
+  }
+
+  #{{ zv_id }} .zv-container { padding: 0; }
+  #{{ zv_id }} .zv-header { padding: 0 16px; margin-bottom: 22px; }
+  #{{ zv_id }} .zv-title { font-size: 26px; }
+  #{{ zv_id }} .zv-subtitle { font-size: 14px; }
+
+  /* O trilho encosta na borda da tela, deixando o próximo vídeo "espiando" */
+  #{{ zv_id }} .zv-track {
+    padding: 0 16px;
+    scroll-padding: 0 16px;
+  }
+
+  #{{ zv_id }} .zv-card { border-radius: 14px; }
+  #{{ zv_id }} .zv-info { left: 10px; right: 10px; bottom: 10px; }
+  #{{ zv_id }} .zv-name { font-size: 14px; }
+  #{{ zv_id }} .zv-handle { font-size: 12px; }
+  #{{ zv_id }} .zv-product { gap: 8px; padding: 6px; }
+  #{{ zv_id }} .zv-product img { width: 36px; height: 36px; }
+  #{{ zv_id }} .zv-product-title,
+  #{{ zv_id }} .zv-product-price { font-size: 12px; }
+  #{{ zv_id }} .zv-product-plus { width: 26px; height: 26px; font-size: 18px; }
+  #{{ zv_id }} .zv-btn { width: 32px; height: 32px; }
+  #{{ zv_id }} .zv-big-play { width: 52px; height: 52px; margin: -26px 0 0 -26px; }
+  #{{ zv_id }} .zv-arrow { display: none; }
+  #{{ zv_id }} .zv-nav { margin-top: 18px; }
+}
+{%- endstyle -%}
+
+<section
+  id="{{ zv_id }}"
+  class="zv-section"
+  data-section-id="{{ section.id }}"
+  data-section-type="videos-clientes"
+  data-autoplay="{{ section.settings.autoplay }}"
+>
+  <div class="zv-container">
+    {%- if section.settings.pill != blank or section.settings.title != blank or section.settings.subtitle != blank -%}
+      <header class="zv-header">
+        {%- if section.settings.pill != blank -%}
+          <span class="zv-pill">{{ section.settings.pill }}</span><br>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="zv-title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="zv-subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <ul class="zv-track" data-zv-track>
+      {%- for block in section.blocks -%}
+        {%- assign zv_product = all_products[block.settings.product] -%}
+        {%- assign zv_handle = block.settings.instagram | strip | remove: '@' -%}
+
+        <li class="zv-card" data-zv-card {{ block.shopify_attributes }}>
+          <div class="zv-media">
+            {%- if block.settings.video_url != blank -%}
+              <video
+                data-src="{{ block.settings.video_url | strip }}"
+                {% if block.settings.poster != blank %}poster="{{ block.settings.poster | img_url: '540x' }}"{% endif %}
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                preload="none"
+                aria-label="Vídeo de {{ block.settings.name | default: 'cliente' | escape }}"
+              ></video>
+            {%- elsif block.settings.poster != blank -%}
+              <img src="{{ block.settings.poster | img_url: '540x' }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag }}
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.video_url != blank -%}
+            <button type="button" class="zv-big-play" data-zv-toggle aria-label="Assistir vídeo">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+
+            <div class="zv-controls">
+              <button type="button" class="zv-btn" data-zv-toggle aria-label="Play / pausar">
+                <svg class="zv-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="zv-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+              </button>
+              <button type="button" class="zv-btn" data-zv-mute aria-label="Ativar / desativar som">
+                <svg class="zv-icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.59 3L19 9.59 17.59 8.17 15.17 10.6 12.76 8.17 11.34 9.59 13.76 12l-2.42 2.41 1.42 1.42 2.41-2.42 2.42 2.42L19 14.41z"/></svg>
+                <svg class="zv-icon-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.47 4.47 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06A9 9 0 0 0 14 3.23z"/></svg>
+              </button>
+            </div>
+          {%- endif -%}
+
+          <div class="zv-info">
+            {%- if block.settings.badge != blank -%}
+              <span class="zv-badge">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                {{ block.settings.badge }}
+              </span>
+            {%- endif -%}
+
+            {%- if block.settings.name != blank -%}
+              <p class="zv-name">{{ block.settings.name }}</p>
+            {%- endif -%}
+
+            {%- if zv_handle != blank -%}
+              <a class="zv-handle" href="https://www.instagram.com/{{ zv_handle }}/" target="_blank" rel="noopener nofollow">Instagram @{{ zv_handle }}</a>
+            {%- endif -%}
+
+            {%- if zv_product != blank and zv_product.id -%}
+              <a class="zv-product" href="{{ zv_product.url }}">
+                {%- if zv_product.featured_image -%}
+                  <img src="{{ zv_product.featured_image | img_url: '100x100', crop: 'center' }}" alt="{{ zv_product.title | escape }}" width="44" height="44" loading="lazy">
+                {%- endif -%}
+                <span class="zv-product-text">
+                  <span class="zv-product-title">{{ zv_product.title }}</span>
+                  <span class="zv-product-price">{{ zv_product.price | money }}</span>
+                </span>
+                <span class="zv-product-plus" aria-hidden="true">+</span>
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- else -%}
+        {%- for i in (1..5) -%}
+          <li class="zv-card">
+            <div class="zv-media">{{ 'lifestyle-1' | placeholder_svg_tag }}</div>
+            <div class="zv-info">
+              <span class="zv-badge">Cliente Zymo</span>
+              <p class="zv-name">Adicione um vídeo</p>
+              <span class="zv-handle">Use "Adicionar bloco" no editor</span>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+
+    <div class="zv-nav" data-zv-nav hidden>
+      <button type="button" class="zv-arrow" data-zv-prev aria-label="Vídeos anteriores">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="zv-dots" data-zv-dots></div>
+      <button type="button" class="zv-arrow" data-zv-next aria-label="Próximos vídeos">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    "use strict";
+
+    function iniciarCarrossel(secao) {
+      if (!secao || secao.dataset.zvPronto) {
+        return;
+      }
+      secao.dataset.zvPronto = "1";
+
+      var trilho = secao.querySelector("[data-zv-track]");
+      var navegacao = secao.querySelector("[data-zv-nav]");
+      var bolinhas = secao.querySelector("[data-zv-dots]");
+      var anterior = secao.querySelector("[data-zv-prev]");
+      var proximo = secao.querySelector("[data-zv-next]");
+      var cards = Array.prototype.slice.call(secao.querySelectorAll("[data-zv-card]"));
+      var autoplay = secao.dataset.autoplay === "true" &&
+        !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+      /* ---------- Vídeos ---------- */
+
+      function videoDo(card) {
+        return card.querySelector("video");
+      }
+
+      function carregar(video) {
+        if (video && !video.getAttribute("src") && video.dataset.src) {
+          video.setAttribute("src", video.dataset.src);
+          video.preload = "metadata";
+        }
+      }
+
+      function atualizarEstado(card) {
+        var video = videoDo(card);
+        if (!video) {
+          return;
+        }
+        card.classList.toggle("is-playing", !video.paused);
+        card.classList.toggle("has-sound", !video.muted);
+      }
+
+      function tocar(card) {
+        var video = videoDo(card);
+        if (!video) {
+          return;
+        }
+        carregar(video);
+        var promessa = video.play();
+        if (promessa && promessa.catch) {
+          promessa.catch(function () {
+            /* O navegador bloqueou o play automático com som — volta a tocar mudo. */
+            video.muted = true;
+            video.play().catch(function () {});
+          });
+        }
+      }
+
+      /* Só um vídeo com som de cada vez, em toda a página. */
+      function silenciarOutros(cardAtual) {
+        document.querySelectorAll(".zv-section [data-zv-card]").forEach(function (card) {
+          var video = videoDo(card);
+          if (card !== cardAtual && video && !video.muted) {
+            video.muted = true;
+            if (!autoplay) {
+              video.pause();
+            }
+          }
+        });
+      }
+
+      cards.forEach(function (card) {
+        var video = videoDo(card);
+        if (!video) {
+          return;
+        }
+
+        ["play", "pause", "volumechange"].forEach(function (evento) {
+          video.addEventListener(evento, function () {
+            atualizarEstado(card);
+          });
+        });
+
+        function alternarPlay(e) {
+          e.preventDefault();
+          if (video.paused) {
+            card.dataset.zvPausadoPeloUsuario = "";
+            tocar(card);
+          } else {
+            card.dataset.zvPausadoPeloUsuario = "1";
+            video.pause();
+          }
+        }
+
+        card.querySelectorAll("[data-zv-toggle]").forEach(function (botao) {
+          botao.addEventListener("click", alternarPlay);
+        });
+        video.addEventListener("click", alternarPlay);
+
+        var botaoSom = card.querySelector("[data-zv-mute]");
+        if (botaoSom) {
+          botaoSom.addEventListener("click", function (e) {
+            e.preventDefault();
+            video.muted = !video.muted;
+            if (!video.muted) {
+              silenciarOutros(card);
+              card.dataset.zvPausadoPeloUsuario = "";
+              tocar(card);
+            }
+          });
+        }
+      });
+
+      if ("IntersectionObserver" in window) {
+        /* Baixa o vídeo um pouco antes de ele aparecer na tela. */
+        var observadorCarga = new IntersectionObserver(function (entradas) {
+          entradas.forEach(function (entrada) {
+            if (entrada.isIntersecting) {
+              carregar(videoDo(entrada.target));
+              observadorCarga.unobserve(entrada.target);
+            }
+          });
+        }, { rootMargin: "200px 400px" });
+
+        /* Toca (mudo) quando está visível e pausa quando sai da tela. */
+        var observadorPlay = new IntersectionObserver(function (entradas) {
+          entradas.forEach(function (entrada) {
+            var card = entrada.target;
+            var video = videoDo(card);
+            if (!video) {
+              return;
+            }
+            if (entrada.isIntersecting && entrada.intersectionRatio >= 0.6) {
+              if (autoplay && !card.dataset.zvPausadoPeloUsuario) {
+                tocar(card);
+              }
+            } else if (!video.paused) {
+              video.pause();
+            }
+          });
+        }, { threshold: [0, 0.6] });
+
+        cards.forEach(function (card) {
+          if (videoDo(card)) {
+            observadorCarga.observe(card);
+            observadorPlay.observe(card);
+          }
+        });
+      } else {
+        cards.forEach(function (card) {
+          carregar(videoDo(card));
+        });
+      }
+
+      /* ---------- Setas e bolinhas ---------- */
+
+      function larguraDaPagina() {
+        return trilho.clientWidth;
+      }
+
+      function rolagemMaxima() {
+        return Math.max(0, trilho.scrollWidth - trilho.clientWidth);
+      }
+
+      function totalDePaginas() {
+        var maxima = rolagemMaxima();
+        if (maxima <= 2) {
+          return 1;
+        }
+        return Math.ceil(maxima / larguraDaPagina() - 0.02) + 1;
+      }
+
+      function paginaAtual() {
+        var total = totalDePaginas();
+        if (trilho.scrollLeft >= rolagemMaxima() - 2) {
+          return total - 1;
+        }
+        return Math.min(total - 1, Math.round(trilho.scrollLeft / larguraDaPagina()));
+      }
+
+      function irPara(pagina) {
+        var destino = Math.min(pagina * larguraDaPagina(), rolagemMaxima());
+        trilho.scrollTo({ left: destino, behavior: "smooth" });
+      }
+
+      function montarBolinhas() {
+        var total = totalDePaginas();
+        navegacao.hidden = total <= 1;
+        bolinhas.innerHTML = "";
+        for (var i = 0; i < total; i++) {
+          var bolinha = document.createElement("button");
+          bolinha.type = "button";
+          bolinha.className = "zv-dot";
+          bolinha.setAttribute("aria-label", "Ir para o grupo " + (i + 1));
+          bolinha.addEventListener("click", irPara.bind(null, i));
+          bolinhas.appendChild(bolinha);
+        }
+        atualizarNavegacao();
+      }
+
+      function atualizarNavegacao() {
+        var atual = paginaAtual();
+        Array.prototype.forEach.call(bolinhas.children, function (bolinha, i) {
+          bolinha.classList.toggle("is-active", i === atual);
+        });
+        anterior.disabled = trilho.scrollLeft <= 2;
+        proximo.disabled = trilho.scrollLeft >= rolagemMaxima() - 2;
+      }
+
+      anterior.addEventListener("click", function () {
+        trilho.scrollBy({ left: -larguraDaPagina(), behavior: "smooth" });
+      });
+      proximo.addEventListener("click", function () {
+        trilho.scrollBy({ left: larguraDaPagina(), behavior: "smooth" });
+      });
+
+      var agendado = false;
+      trilho.addEventListener("scroll", function () {
+        if (agendado) {
+          return;
+        }
+        agendado = true;
+        window.requestAnimationFrame(function () {
+          agendado = false;
+          atualizarNavegacao();
+        });
+      }, { passive: true });
+
+      var redimensionando;
+      window.addEventListener("resize", function () {
+        clearTimeout(redimensionando);
+        redimensionando = setTimeout(montarBolinhas, 150);
+      });
+
+      montarBolinhas();
+
+      /* No editor do tema: ao clicar num bloco, rola até o vídeo dele. */
+      secao.addEventListener("shopify:block:select", function (e) {
+        var card = e.target.closest ? e.target.closest("[data-zv-card]") : null;
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+        }
+      });
+    }
+
+    iniciarCarrossel(document.getElementById({{ zv_id | json }}));
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vídeos de clientes",
+  "class": "shopify-section--videos-clientes",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Título"
+    },
+    {
+      "type": "text",
+      "id": "pill",
+      "label": "Selo acima do título",
+      "default": "⚽ Clientes Zymo"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Quem usa, aprova!"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Eles vestem, confiam e recomendam."
+    },
+    {
+      "type": "header",
+      "content": "Vídeos"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Tocar sozinho (sem som) quando aparecer na tela",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "per_view_desktop",
+      "label": "Vídeos visíveis no computador",
+      "min": 2,
+      "max": 6,
+      "step": 0.5,
+      "default": 4.5
+    },
+    {
+      "type": "range",
+      "id": "per_view_tablet",
+      "label": "Vídeos visíveis no tablet",
+      "min": 1.5,
+      "max": 4,
+      "step": 0.5,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "per_view_mobile",
+      "label": "Vídeos visíveis no celular",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.6,
+      "info": "Use um número quebrado (ex: 1,6) para o próximo vídeo aparecer cortado na borda e o cliente perceber que dá para arrastar."
+    },
+    {
+      "type": "header",
+      "content": "Cores"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Cor de destaque (selos, setas e bolinhas)",
+      "info": "Deixe vazio para usar a cor de destaque do tema."
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Cor do texto dos selos",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Cor do título",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Cor de fundo",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Espaçamento"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Margem superior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Margem inferior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vídeo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Link do vídeo (MP4)",
+          "info": "Suba o vídeo em Conteúdo > Arquivos, copie o link e cole aqui. Grave em pé (formato Reels/Stories)."
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Imagem de capa (opcional)",
+          "info": "Aparece enquanto o vídeo carrega. Formato em pé, 9:16."
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Selo",
+          "default": "Cliente oficial"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nome da pessoa"
+        },
+        {
+          "type": "text",
+          "id": "instagram",
+          "label": "@ do Instagram (opcional)",
+          "info": "Ex: @zymosports"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Camisa que aparece no vídeo (opcional)",
+          "info": "Mostra a foto, o nome e o preço com link para o produto."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vídeos de clientes",
+      "category": "Vídeo"
+    }
+  ]
+}
+{% endschema %}
